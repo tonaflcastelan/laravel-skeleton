@@ -1,0 +1,22 @@
+version: '3'
+services:
+  php:
+    volumes:
+      - .:/application
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    depends_on:
+      - mysql
+
+  nginx:
+    volumes:
+      - .:/application
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    depends_on:
+      - php
+
+  mysql:
+    image: mysql:8.0

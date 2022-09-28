@@ -1,0 +1,42 @@
+version: '3'
+services:
+  php-cs-fixer:
+    user: "${USER_ID}:${GROUP_ID}"
+    image: tonacastelan/docker-php:latest
+    init: true
+    volumes:
+      - .:/application
+    entrypoint: ./vendor/bin/php-cs-fixer
+    command: fix --verbose --show-progress=dots
+
+  php-cs:
+    user: "${USER_ID}:${GROUP_ID}"
+    image: tonacastelan/docker-php:latest
+    init: true
+    volumes:
+      - .:/application
+    entrypoint: ./vendor/bin/phpcs
+    command: ./vendor/bin/phpcs
+
+  composer:
+    user: "${USER_ID}:${GROUP_ID}"
+    image: tonacastelan/docker-php:latest
+    init: true
+    volumes:
+      - .:/application
+      - meditools-composer-cache:/root/.composer/cache
+      - ${COMPOSER_HOME:-~/.composer}/auth.json:/root/.composer/auth.json
+    entrypoint: composer
+
+  console:
+    user: "${USER_ID}:${GROUP_ID}"
+    image: tonacastelan/docker-php:latest
+
+    init: true
+    volumes:
+      - .:/application
+    entrypoint: php artisan
+
+volumes:
+  meditools-composer-cache:
+    name: meditools-composer-cache
